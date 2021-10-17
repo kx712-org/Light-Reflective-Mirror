@@ -28,7 +28,11 @@ namespace LightReflectiveMirror.LoadBalancing
 
         public string GenerateServerID()
         {
+<<<<<<< HEAD
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+=======
+            chars = conf.RandomlyGeneratedIDNumerical ? "0123456789" : chars;
+>>>>>>> b725d54 (Updated numerical check to ternary)
             var randomID = "";
             var random = _cachedRandom;
 
