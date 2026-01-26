@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,10 +21,8 @@ namespace LightReflectiveMirror.Endpoints {
 
     [RestResource (BasePath = "/api/")]
     public class Endpoint {
-
         private static Dictionary<int, string> _cachedServerListAppId = new ();
         private static Dictionary<int, string> _cachedCompressedServerListAppId = new ();
-
         private static string _cachedServerList = "[]";
         private static string _cachedCompressedServerList;
         public static DateTime lastPing = DateTime.Now;
@@ -59,7 +58,6 @@ namespace LightReflectiveMirror.Endpoints {
                 _cachedServerListAppId.Add (rooms.First ().appId, jsonRooms);
                 _cachedCompressedServerListAppId.Add (rooms.First ().appId, jsonRooms.Compress ());
             });
-
 
             if (Program.conf.UseLoadBalancer)
                 Program.instance.UpdateLoadBalancerServers ();
@@ -124,6 +122,87 @@ namespace LightReflectiveMirror.Endpoints {
             context.Response.Headers.Add ("Access-Control-Allow-Headers", originHeaders);
 
             await context.Response.SendResponseAsync (HttpStatusCode.Ok);
+        }
+
+        [RestRoute ("Get", "/health")]
+        public async Task Health (IHttpContext context) {
+            await context.Response.SendResponseAsync ("{\"status\":\"ok\"}");
+        }
+
+        [RestRoute ("Get", "/logs")]
+        public async Task Logs (IHttpContext context) {
+            context.Response.Headers.Add ("Access-Control-Allow-Origin", "*");
+            context.Response.Headers.Add ("Access-Control-Allow-Methods", "GET, OPTIONS");
+
+            int count = 100;
+            long? beforeId = null;
+
+            string countStr = context.Request.QueryString["count"];
+            if (!string.IsNullOrEmpty (countStr) && int.TryParse (countStr, out int parsedCount)) {
+                count = Math.Min (parsedCount, 500);
+            }
+
+            string beforeStr = context.Request.QueryString["before"];
+            if (!string.IsNullOrEmpty (beforeStr) && long.TryParse (beforeStr, out long parsedBefore)) {
+                beforeId = parsedBefore;
+            }
+
+            var logs = LogStore.Instance.GetLogs (count, beforeId);
+            var response = new {
+                logs = logs,
+                totalCount = LogStore.Instance.Count,
+                hasMore = logs.Count > 0 && logs.Count == count
+            };
+
+            string json = JsonConvert.SerializeObject (response, Formatting.Indented);
+            await context.Response.SendResponseAsync (json);
+        }
+
+        [RestRoute ("Options", "/logs")]
+        public async Task LogsOptions (IHttpContext context) {
+            var originHeaders = context.Request.Headers["Access-Control-Request-Headers"];
+
+            context.Response.Headers.Add ("Access-Control-Allow-Origin", "*");
+            context.Response.Headers.Add ("Access-Control-Allow-Methods", "GET, OPTIONS");
+            context.Response.Headers.Add ("Access-Control-Allow-Headers", originHeaders);
+
+            await context.Response.SendResponseAsync (HttpStatusCode.Ok);
+        }
+
+        [RestRoute ("Get", "/")]
+        public async Task Dashboard (IHttpContext context) {
+            try {
+                string html = LoadDashboardHtml ();
+                context.Response.ContentType = Grapevine.ContentType.Html;
+                await context.Response.SendResponseAsync (html);
+            } catch (Exception e) {
+                await context.Response.SendResponseAsync ($"Dashboard error: {e.Message}");
+            }
+        }
+
+        private static string _cachedDashboardHtml = null;
+
+        private string LoadDashboardHtml () {
+            if (_cachedDashboardHtml != null)
+                return _cachedDashboardHtml;
+
+            var filePath = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "web", "index.html");
+            if (File.Exists (filePath)) {
+                _cachedDashboardHtml = File.ReadAllText (filePath);
+                return _cachedDashboardHtml;
+            }
+
+            _cachedDashboardHtml = @"<!DOCTYPE html>
+<html>
+<head><title>LRM Relay Server</title></head>
+<body style='font-family:sans-serif;background:#1a1a2e;color:#eee;padding:40px;'>
+<h1>LRM Relay Server</h1>
+<p>Dashboard HTML not found. Check /web/index.html</p>
+<p><a href='/api/stats' style='color:#4ade80;'>View Stats API</a></p>
+<p><a href='/api/servers' style='color:#4ade80;'>View Servers API</a></p>
+</body>
+</html>";
+            return _cachedDashboardHtml;
         }
     }
 
