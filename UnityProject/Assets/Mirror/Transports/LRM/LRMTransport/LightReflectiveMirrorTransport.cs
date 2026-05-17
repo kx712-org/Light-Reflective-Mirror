@@ -250,7 +250,7 @@ namespace LightReflectiveMirror {
 
                             initalData.WriteBool (ref sendPos, true);
                             initalData.WriteString (ref sendPos, data.ReadString (ref pos));
-                            NATPunchtroughPort = data.ReadInt (ref pos);
+                            NATPunchthroughPort = data.ReadInt (ref pos);
 
                             if (_NATPuncher == null) {
                                 _NATPuncher = new UdpClient { ExclusiveAddressUse = false };
@@ -267,7 +267,7 @@ namespace LightReflectiveMirror {
                             if (!IPAddress.TryParse (serverIP, out IPAddress serverAddr))
                                 serverAddr = Dns.GetHostEntry (serverIP).AddressList[0];
 
-                            _relayPuncherIP = new IPEndPoint (serverAddr, NATPunchtroughPort);
+                            _relayPuncherIP = new IPEndPoint (serverAddr, NATPunchthroughPort);
 
                             for (int attempts = 0; attempts < NAT_PUNCH_ATTEMPTS; attempts++)
                                 _NATPuncher.Send (initalData, sendPos, _relayPuncherIP);

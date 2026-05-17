@@ -37,13 +37,13 @@ namespace LightReflectiveMirror {
                 _currentConnections.Add (clientID);
                 _relay.ClientConnected (clientID);
 
-                if (conf.EnableNATPunchtroughServer) {
+                if (conf.EnableNATPunchthroughServer) {
                     string natID = Guid.NewGuid ().ToString ();
                     _pendingNATPunches.Add (clientID, natID);
                     _NATRequestPosition = 0;
                     _NATRequest.WriteByte (ref _NATRequestPosition, (byte) OpCodes.RequestNATConnection);
                     _NATRequest.WriteString (ref _NATRequestPosition, natID);
-                    _NATRequest.WriteInt (ref _NATRequestPosition, conf.NATPunchtroughPort);
+                    _NATRequest.WriteInt (ref _NATRequestPosition, conf.NATPunchthroughPort);
                     transport.ServerSend (clientID, new ArraySegment<byte> (_NATRequest, 0, _NATRequestPosition), 0);
                 }
             };
@@ -84,7 +84,7 @@ namespace LightReflectiveMirror {
             WriteLogMessage ("\nStarting NatPunchthrough Socket... ", ConsoleColor.White, true);
 
             try {
-                _punchServer = new UdpClient (conf.NATPunchtroughPort);
+                _punchServer = new UdpClient (conf.NATPunchthroughPort);
 
                 WriteLogMessage ("OK\n", ConsoleColor.Green, true);
 
@@ -111,7 +111,7 @@ namespace LightReflectiveMirror {
                 conf.TransportPort = transportPort;
 
             if (ushort.TryParse (Environment.GetEnvironmentVariable ("LRM_PUNCHER_PORT"), out ushort puncherPort))
-                conf.NATPunchtroughPort = puncherPort;
+                conf.NATPunchthroughPort = puncherPort;
 
             string LBAuthKey = Environment.GetEnvironmentVariable ("LRM_LB_AUTHKEY");
             if (!string.IsNullOrWhiteSpace (LBAuthKey)) {

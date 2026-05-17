@@ -561,7 +561,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   useNATPunch: 0
-  NATPunchtroughPort: 1
+  NATPunchthroughPort: 1
   useLoadBalancer: 0
   loadBalancerPort: 7070
   loadBalancerAddress: 127.0.0.1

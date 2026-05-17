@@ -158,20 +158,20 @@ namespace LightReflectiveMirror
                     }
                 }
             }
-            else if (lrm.NATPunchtroughPort < 0)
+            else if (lrm.NATPunchthroughPort < 0)
             {
                 // NAT Punchthrough configuration.
                 EditorGUILayout.HelpBox("Do you wish to use NAT Punchthrough? This can reduce load by up to 80% on your LRM nodes, but exposes players IP's to other players.", MessageType.None);
 
                 if (GUILayout.Button("Use NAT Punchthrough"))
                 {
-                    lrm.NATPunchtroughPort = 1;
+                    lrm.NATPunchthroughPort = 1;
                     lrm.useNATPunch = true;
                     lrm.gameObject.AddComponent<LRMDirectConnectModule>();
                 }
 
                 if (GUILayout.Button("Do NOT use NAT Punchthrough"))
-                    lrm.NATPunchtroughPort = 1;
+                    lrm.NATPunchthroughPort = 1;
 
             }
             else if (directModule != null && directModule.directConnectTransport == null)

@@ -31,8 +31,25 @@ namespace LightReflectiveMirror
         //========================
         // Nat Puncher Settings
         //========================
-        public bool EnableNATPunchtroughServer = true;
-        public ushort NATPunchtroughPort = 7776;
+        public bool EnableNATPunchthroughServer = true;
+        public ushort NATPunchthroughPort = 7776;
+
+        // Deprecated typo aliases - kept for backwards compatibility
+        [JsonProperty("EnableNATPunchtroughServer")]
+        private bool EnableNATPunchtroughServer_Compat {
+            set {
+                Program.WriteLogMessage ("Config key 'EnableNATPunchtroughServer' is deprecated, use 'EnableNATPunchthroughServer' instead.", ConsoleColor.Yellow);
+                EnableNATPunchthroughServer = value;
+            }
+        }
+
+        [JsonProperty("NATPunchtroughPort")]
+        private ushort NATPunchtroughPort_Compat {
+            set {
+                Program.WriteLogMessage ("Config key 'NATPunchtroughPort' is deprecated, use 'NATPunchthroughPort' instead.", ConsoleColor.Yellow);
+                NATPunchthroughPort = value;
+            }
+        }
 
         //========================
         // Load Balancer Settings

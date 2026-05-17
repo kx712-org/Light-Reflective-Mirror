@@ -20,7 +20,7 @@ namespace LightReflectiveMirror {
 
         // NAT Puncher variables
         public bool useNATPunch = false;
-        public int NATPunchtroughPort = -1;
+        public int NATPunchthroughPort = -1;
         private const int NAT_PUNCH_ATTEMPTS = 3;
 
         // LLB variables (LRM Load Balancer)

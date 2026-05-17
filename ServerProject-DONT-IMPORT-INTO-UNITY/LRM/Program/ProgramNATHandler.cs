@@ -8,7 +8,7 @@ namespace LightReflectiveMirror
         void RunNATPunchLoop()
         {
             WriteLogMessage("OK\n", ConsoleColor.Green);
-            IPEndPoint remoteEndpoint = new(IPAddress.Any, conf.NATPunchtroughPort);
+            IPEndPoint remoteEndpoint = new(IPAddress.Any, conf.NATPunchthroughPort);
 
             // Stock Data server sends to everyone:
             var serverResponse = new byte[1] { 1 };

@@ -40,8 +40,8 @@ namespace LightReflectiveMirror {
                     conf.UseEndpoint = bool.Parse (Environment.GetEnvironmentVariable ("USE_ENDPOINT") ?? "true");
                     conf.EndpointPort = ushort.Parse (Environment.GetEnvironmentVariable ("ENDPOINT_PORT") ?? "8080");
                     conf.EndpointServerList = bool.Parse (Environment.GetEnvironmentVariable ("ENDPOINT_SERVERLIST") ?? "true");
-                    conf.EnableNATPunchtroughServer = bool.Parse (Environment.GetEnvironmentVariable ("ENABLE_NATPUNCH_SERVER") ?? "true");
-                    conf.NATPunchtroughPort = ushort.Parse (Environment.GetEnvironmentVariable ("NAT_PUNCH_PORT") ?? "7776");
+                    conf.EnableNATPunchthroughServer = bool.Parse (Environment.GetEnvironmentVariable ("ENABLE_NATPUNCH_SERVER") ?? "true");
+                    conf.NATPunchthroughPort = ushort.Parse (Environment.GetEnvironmentVariable ("NAT_PUNCH_PORT") ?? "7776");
                     conf.UseLoadBalancer = bool.Parse (Environment.GetEnvironmentVariable ("USE_LOAD_BALANCER") ?? "false");
                     conf.LoadBalancerAuthKey = Environment.GetEnvironmentVariable ("LOAD_BALANCER_AUTH_KEY") ?? "AuthKey";
                     conf.LoadBalancerAddress = Environment.GetEnvironmentVariable ("LOAD_BALANCER_ADDRESS") ?? "127.0.0.1";
@@ -64,7 +64,7 @@ namespace LightReflectiveMirror {
                         if (conf.UseEndpoint)
                             ConfigureEndpoint ();
 
-                        if (conf.EnableNATPunchtroughServer)
+                        if (conf.EnableNATPunchthroughServer)
                             ConfigurePunchthrough ();
                     } else {
                         WriteLogMessage ("FAILED\nClass not found, make sure to included namespaces!", ConsoleColor.DarkRed);
