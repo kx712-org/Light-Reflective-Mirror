@@ -28,6 +28,7 @@ namespace LightReflectiveMirror
         public bool UseEndpoint = true;
         public ushort EndpointPort = 8080;
         public bool EndpointServerList = true;
+        public string PublicHost = null;
 
         //========================
         // Nat Puncher Settings

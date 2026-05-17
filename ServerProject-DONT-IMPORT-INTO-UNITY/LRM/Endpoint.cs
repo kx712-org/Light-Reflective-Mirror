@@ -100,6 +100,31 @@ namespace LightReflectiveMirror.Endpoints {
                 Program.instance.UpdateLoadBalancerServers ();
         }
 
+        [RestRoute("Get", "/config")]
+        public async Task Config(IHttpContext context)
+        {
+            string hostRaw = context.Request.Headers["Host"];
+            string host = hostRaw?.Split(':')[0];
+
+            host =
+                !string.IsNullOrEmpty(Program.conf.PublicHost)
+                    ? Program.conf.PublicHost
+                    : host;
+
+            var result = new
+            {
+                host = host,
+                relayPort = Program.conf.TransportPort,
+                natPort = Program.conf.NATPunchthroughPort,
+                apiPort = Program.conf.EndpointPort
+            };
+
+            context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+            string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+            await context.Response.SendResponseAsync(json);
+        }
+
         [RestRoute ("Get", "/stats")]
         public async Task Stats (IHttpContext context) {
             lastPing = DateTime.Now;

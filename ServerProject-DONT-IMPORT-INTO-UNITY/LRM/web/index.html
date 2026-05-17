@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -281,15 +281,15 @@
             <div class="endpoints">
                 <div class="endpoint">
                     <span class="label">Relay:</span>
-                    <span class="value">relay.nod.kr:7777</span>
+                    <span class="value" id="relayEndpoint">-</span>
                 </div>
                 <div class="endpoint">
                     <span class="label">NAT Punch:</span>
-                    <span class="value">relay.nod.kr:7776</span>
+                    <span class="value" id="natEndpoint">-</span>
                 </div>
                 <div class="endpoint">
                     <span class="label">API:</span>
-                    <span class="value">relay.nod.kr:8092</span>
+                    <span class="value" id="apiEndpoint">-</span>
                 </div>
             </div>
         </div>
@@ -450,6 +450,25 @@
         let oldestLogId = null;
         let hasMoreLogs = false;
 
+        async function fetchConfig() {
+            try {
+                const res = await fetch('/api/config');
+                const cfg = await res.json();
+
+                document.getElementById('relayEndpoint').textContent =
+                    `${cfg.host}:${cfg.relayPort}`;
+
+                document.getElementById('natEndpoint').textContent =
+                    `${cfg.host}:${cfg.natPort}`;
+
+                document.getElementById('apiEndpoint').textContent =
+                    `${cfg.host}:${cfg.apiPort}`;
+
+            } catch (e) {
+                console.error("Failed to fetch config", e);
+            }
+        }
+
         async function fetchLogs(reset = false) {
             try {
                 let url = '/api/logs?count=100';
@@ -509,7 +528,7 @@
 
         function formatLogTime(timestamp) {
             const date = new Date(timestamp);
-            return date.toLocaleString('ko-KR', {
+            return date.toLocaleString('en-US', {
                 month: '2-digit',
                 day: '2-digit',
                 hour: '2-digit',
@@ -539,12 +558,16 @@
         // Initial load
         refresh();
         fetchLogs(true);
+        fetchConfig();
 
         // Refresh every 2 seconds (stats and rooms only)
         refreshInterval = setInterval(refresh, 2000);
 
         // Refresh logs every 5 seconds
         setInterval(() => fetchLogs(true), 5000);
+
+        // Refresh config every 1 hour
+        setInterval(fetchConfig, 60 * 60 * 1000);
     </script>
 </body>
 </html>
