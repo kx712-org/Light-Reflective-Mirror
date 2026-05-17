@@ -26,6 +26,7 @@ namespace LightReflectiveMirror.Endpoints {
         private static Dictionary<int, string> _cachedCompressedServerListAppId = new ();
         private static string _cachedServerList = "[]";
         private static string _cachedCompressedServerList;
+        private static readonly string _emptyCompressedList = "[]".Compress();
         public static DateTime lastPing = DateTime.Now;
 
         // 허용된 IP 목록 (환경변수 ALLOWED_IPS로 설정, 쉼표로 구분)
@@ -143,7 +144,7 @@ namespace LightReflectiveMirror.Endpoints {
 
             if (Program.conf.EndpointServerList) {
                 int appId = int.Parse (context.Request.PathParameters["appId"]);
-                await context.Response.SendResponseAsync (_cachedCompressedServerListAppId.GetValueOrDefault (appId, "[]".Compress ()));
+                await context.Response.SendResponseAsync(_cachedCompressedServerListAppId.GetValueOrDefault(appId, _emptyCompressedList));
             } else
                 await context.Response.SendResponseAsync (HttpStatusCode.Forbidden);
         }
