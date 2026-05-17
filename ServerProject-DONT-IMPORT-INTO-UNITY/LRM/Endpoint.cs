@@ -264,7 +264,7 @@ namespace LightReflectiveMirror.Endpoints {
                 var server = new RestServerBuilder (new ServiceCollection (), config,
                     (services) => {
                         services.AddLogging (configure => configure.AddConsole ());
-                        services.Configure<LoggerFilterOptions> (options => options.MinLevel = LogLevel.None);
+                        services.Configure<LoggerFilterOptions> (options => options.MinLevel = Microsoft.Extensions.Logging.LogLevel.None);
                     }, (server) => {
                         if (ssl) {
                             server.Prefixes.Add ($"https://*:{port}/");
