@@ -1,14 +1,15 @@
 ![Logo](LRM.png)
 
-# Light Reflective Mirror - Enhanced v15
+# Light Reflective Mirror - Enhanced v16
 
-![GitHub issues](https://img.shields.io/github/issues-raw/4t0m1c/Light-Reflective-Mirror)
+![GitHub issues](https://img.shields.io/github/issues-raw/kx712-org/Light-Reflective-Mirror)
 
 **Enhanced community-maintained fork with modern Mirror compatibility**
+This release is tagged as v16 to reflect continued maintenance and accumulated changes.
 
-## What's New in v15
+## What's New in v16
 
-This release builds upon [Speidy674's V14 maintenance work](https://github.com/Speidy674/Light-Reflective-Mirror) and [4t0m1c's modernization work](https://github.com/4t0m1c/Light-Reflective-Mirror), with additional features cherry-picked from [painh's fork](https://github.com/painh/Light-Reflective-Mirror) and upstream PRs/issues from the original repo.
+This release builds upon [Speidy674's V14 maintenance work](https://github.com/Speidy674/Light-Reflective-Mirror) and [4t0m1c's modernization work (V15)](https://github.com/4t0m1c/Light-Reflective-Mirror) from [Derek-R-S's original work](https://github.com/Derek-R-S/Light-Reflective-Mirror), with additional features cherry-picked from [painh's fork](https://github.com/painh/Light-Reflective-Mirror), upstream PRs/issues, and additional fixes identified during maintenance.
 
 ### 🚀 **Key Improvements**
 - **Mirror 93.0.0+ Compatibility** - Full support for modern Mirror versions
@@ -135,11 +136,11 @@ ALLOWED_IPS - Comma-separated list of IPs allowed to access the dashboard and `/
 
 ## Compatibility Matrix
 
-| Component | Original LRM | Speidy674 V14 | This Release (v15) |
-|-----------|--------------|---------------|-------------------|
-| .NET Framework | 5.0 | 7.0 | 8.0+ |
-| Mirror | Up to ~30.x | Up to ~50.x | 93.0.0+ |
-| Unity | 2020.3+ | 2021.3+ | 2021.3+ |
+| Component | Original LRM | Speidy674 V14 | 4t0m1c v15 | This Release (v16) |
+|-----------|--------------|---------------|-------------------|-------------------|
+| .NET Framework | 5.0 | 7.0 | 8.0+ | 8.0+ |
+| Mirror | Up to ~30.x | Up to ~50.x | 93.0.0+ | 93.0.0+ |
+| Unity | 2020.3+ | 2021.3+ | 2021.3+ | 2021.3+ |
 
 ## What to choose, Epic, Steam, LRM?
 
@@ -174,8 +175,8 @@ LRM is a self-hosted, open source, relay/NAT Punchthrough server. It's available
 
 - **Original**: [Derek-R-S/Light-Reflective-Mirror](https://github.com/Derek-R-S/Light-Reflective-Mirror) (v1-v12)
 - **V14 Base**: [Speidy674/Light-Reflective-Mirror](https://github.com/Speidy674/Light-Reflective-Mirror) (community maintenance)
-- **V15 Base**: [4t0m1c/Light-Reflective-Mirror](https://github.com/4t0m1c/Light-Reflective-Mirror) (modernization)
-- **This Release**: [KX712/Light-Reflective-Mirror](https://github.com/KX712/Light-Reflective-Mirror) (dashboard, fixes, upstream PRs)
+- **V15 Base**: [4t0m1c/Light-Reflective-Mirror](https://github.com/4t0m1c/Light-Reflective-Mirror) (previous major modernization)
+- **This Release**: [KX712/Light-Reflective-Mirror](https://github.com/kx712-org/Light-Reflective-Mirror) (dashboard, fixes, upstream PRs)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
