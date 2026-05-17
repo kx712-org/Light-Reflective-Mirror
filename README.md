@@ -8,11 +8,11 @@
 
 ## What's New in v15
 
-This release builds upon [Speidy674's V14 maintenance work](https://github.com/Speidy674/Light-Reflective-Mirror) with significant modernization:
+This release builds upon [Speidy674's V14 maintenance work](https://github.com/Speidy674/Light-Reflective-Mirror) and [4t0m1c's modernization work](https://github.com/4t0m1c/Light-Reflective-Mirror), with additional features cherry-picked from [painh's fork](https://github.com/painh/Light-Reflective-Mirror) and upstream PRs/issues from the original repo.
 
 ### 🚀 **Key Improvements**
 - **Mirror 93.0.0+ Compatibility** - Full support for modern Mirror versions
-- **.NET 8.0 Upgrade** - Enhanced performance and latest framework features  
+- **.NET 8.0 Upgrade** - Enhanced performance and latest framework features
 - **Enhanced Stability** - Fixed network component sync issues with current Mirror
 - **Better Performance** - Optimized buffer management and memory allocation
 - **Improved Reliability** - Enhanced error handling and connection state management
@@ -24,6 +24,30 @@ This release builds upon [Speidy674's V14 maintenance work](https://github.com/S
 - Enhanced debugging and logging capabilities
 - Fixed SimpleWebTransport FQDN resolution issues
 
+### 🆕 **Additional Features (this fork)**
+
+**From [painh's fork](https://github.com/painh/Light-Reflective-Mirror):**
+- Web dashboard UI (`/api/` endpoint)
+- In-memory log store with `/api/logs` endpoint (pagination supported)
+- `/api/health` endpoint
+- IP whitelist via `ALLOWED_IPS` environment variable (dashboard & logs)
+- Git commit time displayed in dashboard and `/api/stats`
+- Docker build time support via `build_time.txt`
+- Korean log messages for client connect/auth/room events
+
+**From upstream [PR #28](https://github.com/Derek-R-S/Light-Reflective-Mirror/pull/28) (Oyshoboy):**
+- More flexible Room ID generation — numerical IDs supported via `RandomlyGeneratedIDNumerical` config
+
+**Fixes for upstream [Issue #37](https://github.com/Derek-R-S/Light-Reflective-Mirror/issues/37) (VoidFletcher):**
+- Fixed typo `NATPunchtroughServer` → `NATPunchthroughServer` and `NATPunchtroughPort` → `NATPunchthroughPort`
+- Deprecated aliases kept in `Config.cs` for backwards compatibility with existing `config.json` files (logs a warning)
+
+**Other fixes:**
+- Empty server list no longer returns a network error on the client side (`"[]"` is now pre-compressed as a static field)
+- Simplified `.csproj`: removed Costura.Fody in favor of native `PublishSingleFile`
+- AppId filtering on server list endpoints (`/api/servers/{appId}`, `/api/compressed/servers/{appId}`)
+- SSL support in `EndpointServer.Start()` via `bool ssl` parameter
+
 ## What
 
 Light Reflective Mirror is a transport for Mirror Networking which relays network traffic through your own servers. This allows you to have clients host game servers and not worry about NAT/Port Forwarding, etc. This enhanced version ensures compatibility with modern Unity and Mirror versions while maintaining all original functionality.
@@ -33,11 +57,14 @@ Light Reflective Mirror is a transport for Mirror Networking which relays networ
 * Built in server list!
 * Relay password to stop other games from stealing your precious relay!
 * Relay supports connecting users without them needing to port forward!
-* NAT Punchtrough (Full Cone, Restricted Cone, and Port Restricted Cone)
+* NAT Punchthrough (Full Cone, Restricted Cone, and Port Restricted Cone)
 * Direct Connecting
 * Load Balancing with multi-relay setup
-* **NEW: Modern Mirror 93.0.0+ compatibility**
-* **NEW: .NET 8.0 performance improvements**
+* Web dashboard with log viewer
+* AppId-based server list filtering
+* IP whitelist for dashboard/logs
+* **Modern Mirror 93.0.0+ compatibility**
+* **.NET 8.0 performance improvements**
 
 ## How does it work?
 
@@ -47,9 +74,10 @@ I took a bit of a unique approach to this version and instead of using one fixed
 
 This is a **drop-in replacement** for Speidy674's V14:
 - ✅ Full protocol compatibility with V14 and original LRM
-- ✅ Works with existing server deployments  
+- ✅ Works with existing server deployments
 - ✅ Same API, enhanced performance
 - ✅ No code changes required
+- ⚠️ `config.json` keys `NATPunchtroughServer`/`NATPunchtroughPort` still work but log a deprecation warning — rename them to `NATPunchthroughServer`/`NATPunchthroughPort`
 
 ## Tutorials
 
@@ -68,7 +96,7 @@ First things first, you will need:
 * Download the latest release of Light Reflective Mirror Unity Package and put that in your project also. Download from: [Releases](https://github.com/4t0m1c/Light-Reflective-Mirror/releases).
 
 #### Client Setup
-Running a client is fairly straight forward, attach the LightReflectiveMirrorTransport script to your NetworkManager and set it as the transport. Put in the IP/Port of your relay server, assign LightReflectiveMirror as the Transport on the NetworkManager. Then attach the SimpleWebTransport script and assign that in the 'ClientToServerTransport' in the Light Reflective Mirror inspector. When you start a server, you can simply get the URI from the transport and use that to connect. If you wish to connect without the URI, the LightReflectiveMirror component has a public "Server ID" field which is what clients would set as the address to connect to. 
+Running a client is fairly straight forward, attach the LightReflectiveMirrorTransport script to your NetworkManager and set it as the transport. Put in the IP/Port of your relay server, assign LightReflectiveMirror as the Transport on the NetworkManager. Then attach the SimpleWebTransport script and assign that in the 'ClientToServerTransport' in the Light Reflective Mirror inspector. When you start a server, you can simply get the URI from the transport and use that to connect. If you wish to connect without the URI, the LightReflectiveMirror component has a public "Server ID" field which is what clients would set as the address to connect to.
 
 If your relay server has a password, enter it in the relayPassword field or else you wont be able to connect. By default the relays have the password as "Secret Auth Key".
 
@@ -77,7 +105,7 @@ If your relay server has a password, enter it in the relayPassword field or else
 Light Reflective Mirror has a built in room/server list if you would like to use it. To use it you need to set all the values in the 'Server Data' tab in the transport. Also if you would like to make the server show on the list, make sure "Is Public Server" is checked. Once you create a server, you can update those variables from the "UpdateRoomInfo" function on the LightReflectiveMirrorTransport script.
 
 To request the server list you need a reference to the LightReflectiveMirrorTransport from your script and call 'RequestServerList()'. This will invoke a request to the server to update our server list. Once the response is recieved the field 'relayServerList' will be populated and you can get all the servers from there.
- 
+
 #### Server Setup
 Download the latest Server release from: [Releases](https://github.com/4t0m1c/Light-Reflective-Mirror/releases)
 Make sure you have .NET 8.0 Runtime
@@ -102,6 +130,8 @@ AuthenticationKey - This is the key the clients need to have on their inspector.
 UpdateLoopTime - The time in miliseconds between calling 'Update' on the transport
 
 UpdateHeartbeatInterval - the amounts of update calls before sending a heartbeat. By default its 100, which if updateLoopTime is 10, means every (10 * 100 = 1000ms) it will send out a heartbeat.
+
+ALLOWED_IPS - Comma-separated list of IPs allowed to access the dashboard and `/api/logs`. Empty = everyone allowed. `127.0.0.1` is always allowed.
 
 ## Compatibility Matrix
 
@@ -128,9 +158,12 @@ LRM is a self-hosted, open source, relay/NAT Punchthrough server. It's available
 
 **Maintenance Chain:**
 * **Derek-R-S** - Original creator and maintainer through v12
-* **Speidy674** - Community maintenance fork, V14 with .NET 7 upgrade  
+* **Speidy674** - Community maintenance fork, V14 with .NET 7 upgrade
 * **Biebras** - V14 bug fixes and improvements
 * **4t0m1c** - V15 Mirror compatibility and .NET 8 modernization
+* **painh (sihyun)** - Web dashboard, log viewer, IP whitelist, AppId filtering
+* **Oyshoboy** - Flexible Room ID generation (PR #28)
+* **VoidFletcher** - NATPunchthrough typo report (Issue #37)
 
 **Original Contributors:**
 * **Cooper** - Assisted with development and made some wonderful features! He's also active in the discord to help answer questions and help with issues.
@@ -141,7 +174,8 @@ LRM is a self-hosted, open source, relay/NAT Punchthrough server. It's available
 
 - **Original**: [Derek-R-S/Light-Reflective-Mirror](https://github.com/Derek-R-S/Light-Reflective-Mirror) (v1-v12)
 - **V14 Base**: [Speidy674/Light-Reflective-Mirror](https://github.com/Speidy674/Light-Reflective-Mirror) (community maintenance)
-- **This Release**: [4t0m1c/Light-Reflective-Mirror](https://github.com/4t0m1c/Light-Reflective-Mirror) (community maintenance)
+- **V15 Base**: [4t0m1c/Light-Reflective-Mirror](https://github.com/4t0m1c/Light-Reflective-Mirror) (modernization)
+- **This Release**: [KX712/Light-Reflective-Mirror](https://github.com/KX712/Light-Reflective-Mirror) (dashboard, fixes, upstream PRs)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
